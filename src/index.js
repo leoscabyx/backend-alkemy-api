@@ -1,6 +1,7 @@
 import express from 'express'
 
 import { sequelize } from './modelos/index.js'
+import routerPersonajes from './ruteo/routerPersonajes.js'
 
 // Aplicacion de Express
 const app = express()
@@ -15,6 +16,8 @@ app.use(express.urlencoded({ extended: false }))
 app.get('/', async (req, res) => {
     res.json({ msj: 'Hola Mundo Alkemy desde Express & Sequelize'})
 })
+
+app.use('/api/characters', routerPersonajes)
 
 app.listen(PORT, async () => {
   console.log(`Servidor levantado en el puerto: ${PORT}`)
