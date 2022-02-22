@@ -3,6 +3,7 @@ import express from 'express'
 import { sequelize } from './modelos/index.js'
 import routerPersonajes from './ruteo/routerPersonajes.js'
 import routerMovies from './ruteo/routerMovies.js'
+import routerGeneros from './ruteo/routerGeneros.js'
 
 // Aplicacion de Express
 const app = express()
@@ -20,13 +21,14 @@ app.get('/', async (req, res) => {
 
 app.use('/api/characters', routerPersonajes)
 app.use('/api/movies', routerMovies)
+app.use('/api/generos', routerGeneros)
 
 app.listen(PORT, async () => {
   console.log(`Servidor levantado en el puerto: ${PORT}`)
   try {
     // await sequelize.authenticate();
     // Forzar a true: para drop tablas
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     console.log('Conexion establecida con la DB.');
   } catch (error) {
       console.error('No se puede conectar a la DB:', error);
