@@ -28,7 +28,7 @@ app.listen(PORT, async () => {
   try {
     // await sequelize.authenticate();
     // Forzar a true: para drop tablas
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ force: false }); 
     console.log('Conexion establecida con la DB.');
   } catch (error) {
       console.error('No se puede conectar a la DB:', error);

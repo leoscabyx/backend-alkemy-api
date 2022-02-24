@@ -1,9 +1,12 @@
 import Movie from '../modelos/Movie.js'
 
+import Personaje from '../modelos/Personaje.js'
+
 async function getMoviesAll (req, res) {
     try {
         const movies = await Movie.findAll({ 
-            attributes: ['imagen', 'titulo', 'fecha', 'calificacion']
+            attributes: ['imagen', 'titulo', 'fecha', 'calificacion'],
+            include: Personaje
         })
         res.json(movies)
     } catch (error) {
@@ -15,7 +18,8 @@ async function getMoviesById (req, res) {
     try {
         const id = parseInt(req.params.id)
         const movies = await Movie.findByPk(id, { 
-            attributes: ['imagen', 'titulo', 'fecha', 'calificacion']
+            attributes: ['imagen', 'titulo', 'fecha', 'calificacion'],
+            include: Personaje
         })
         res.json(movies)
     } catch (error) {

@@ -1,5 +1,7 @@
 import { sequelize, DataTypes } from './index.js'
 
+import Movie from './Movie.js'
+
 const Personaje = sequelize.define('Personaje', {
 
     imagen: {
@@ -49,5 +51,9 @@ const Personaje = sequelize.define('Personaje', {
     }
   }
 );
+
+// Asociacion N a N
+Personaje.belongsToMany(Movie, { through: "Personaje_Movie" })
+Movie.belongsToMany(Personaje, { through: "Personaje_Movie" })
 
 export default Personaje
