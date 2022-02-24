@@ -21,7 +21,12 @@ app.get('/', async (req, res) => {
 
 app.use('/api/characters', routerPersonajes)
 app.use('/api/movies', routerMovies)
-app.use('/api/generos', routerGeneros)
+app.use('/api/genders', routerGeneros)
+
+/* Manejar cualquier ruta que no este implementada en el servidor */
+app.all('*', (req, res) => {
+  res.json({ msg: `ruta '${req.url}' método ${req.method} no implementada`})
+})
 
 app.listen(PORT, async () => {
   console.log(`Servidor levantado en el puerto: ${PORT}`)
