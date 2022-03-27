@@ -6,7 +6,8 @@ const Movie = sequelize.define('Movie', {
       type: DataTypes.STRING
     },
     titulo: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      unique: true
     },
     fecha: {
       type: DataTypes.STRING
