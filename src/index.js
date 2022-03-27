@@ -4,6 +4,8 @@ import { sequelize } from './modelos/index.js'
 import routerPersonajes from './ruteo/routerPersonajes.js'
 import routerMovies from './ruteo/routerMovies.js'
 import routerGeneros from './ruteo/routerGeneros.js'
+import routerAuth from './ruteo/routerAuth.js'
+import { authJWT } from './utils/jwt.js'
 
 // Aplicacion de Express
 const app = express()
@@ -19,9 +21,10 @@ app.get('/', async (req, res) => {
     res.json({ msj: 'Hola Mundo Alkemy desde Express & Sequelize'})
 })
 
-app.use('/api/characters', routerPersonajes)
-app.use('/api/movies', routerMovies)
-app.use('/api/genders', routerGeneros)
+app.use('/api/auth', routerAuth)
+app.use('/api/characters', authJWT, routerPersonajes)
+app.use('/api/movies', authJWT, routerMovies)
+app.use('/api/genders', authJWT, routerGeneros)
 
 /* Manejar cualquier ruta que no este implementada en el servidor */
 app.all('*', (req, res) => {
