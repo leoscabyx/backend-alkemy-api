@@ -6,7 +6,8 @@ const Genero = sequelize.define('Genero', {
       type: DataTypes.STRING
     },
     nombre: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      unique: true
     }
   }
 );

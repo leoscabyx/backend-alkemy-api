@@ -5,7 +5,8 @@ import {
     postGeneros,
     getGenerosById,
     updateGeneros,
-    deleteGeneros
+    deleteGeneros,
+    addMovieToGenero
 } from '../controladores/controladorGeneros.js'
 
 const router = Router();
@@ -20,6 +21,8 @@ router.post('/', postGeneros)
 
 // Put
 router.put('/:id', updateGeneros)
+
+router.put('/:id/movie/:idMovie', addMovieToGenero)
 
 // Delete
 router.delete('/:id', deleteGeneros)
