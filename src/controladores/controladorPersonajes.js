@@ -2,6 +2,8 @@ import Personaje from '../modelos/Personaje.js'
 
 import Movie from '../modelos/Movie.js'
 
+import { sequelize } from '../modelos/index.js'
+
 async function getPersonajesAll (req, res) {
     try {
         const personajes = await Personaje.findAll({ 
@@ -43,26 +45,7 @@ async function postPersonajes (req, res) {
         }
 
         const personaje = await Personaje.create(campos)
-
-        /* if(!Array.isArray(campos.movies)) {
-            return res.json({ msg: "Debes pasar un array con objetos con las peliculas o series relacionadas al personaje"})
-        }
-
-        if(campos.movies.length === 0) {
-            return res.json({ msg: "El array de peliculas o series esta vacio"})
-        }
-
         
-
-        if(campos.movies.length > 0){
-
-            const moviesPromesas = campos.map( async (movie) => {
-                return await Movie.create(movie)
-            })
-            const movies = await Promise.all(moviesPromesas);
-
-            personaje.addMovies(movies)
-        } */
         res.json(personaje)
     } catch (error) {
         res.json(error)
@@ -121,10 +104,44 @@ async function deletePersonajes (req, res) {
     }
 }
 
+async function addMovieToCharacter (req, res) {
+    try {
+        const id = parseInt(req.params.id)
+        const idMovie = parseInt(req.params.idMovie)
+
+        const [ results ] =  await sequelize.query(`select * from Personaje_Movie where PersonajeId = ${id} and MovieId = ${idMovie}`);
+
+        const [ personaje_movie ] = results
+        
+        if (personaje_movie) {
+            return res.json({ error: "Ya esta asociada esta pelicula a este personaje"})
+        }
+
+        const personaje = await Personaje.findByPk(id)
+        const movie = await Movie.findByPk(idMovie)
+    
+        if (!personaje) {
+            return res.json({ error: "No se ha encontrado el personaje"})
+        }
+    
+        if (!movie) {
+            return res.json({ error: "No se ha encontrado la pelicula o serie"})
+        }
+    
+        personaje.addMovies(movie)
+    
+        res.json(personaje)
+    } catch (error) {
+        console.log(error)
+        res.json(error)
+    }
+}
+
 export {
     getPersonajesAll,
     postPersonajes,
     getPersonajesById,
     updatePersonajes,
-    deletePersonajes
+    deletePersonajes,
+    addMovieToCharacter
 }

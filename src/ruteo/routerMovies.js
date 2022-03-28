@@ -5,7 +5,8 @@ import {
     postMovies,
     getMoviesById,
     updateMovies,
-    deleteMovies
+    deleteMovies,
+    addCharacterToMovie
 } from '../controladores/controladorMovies.js'
 
 const router = Router();
@@ -20,6 +21,8 @@ router.post('/', postMovies)
 
 // Put
 router.put('/:id', updateMovies)
+
+router.put('/:id/character/:idCharacter', addCharacterToMovie)
 
 // Delete
 router.delete('/:id', deleteMovies)

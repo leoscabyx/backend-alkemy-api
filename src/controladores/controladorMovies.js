@@ -2,6 +2,8 @@ import Movie from '../modelos/Movie.js'
 
 import Personaje from '../modelos/Personaje.js'
 
+import { sequelize } from '../modelos/index.js'
+
 async function getMoviesAll (req, res) {
     try {
         const movies = await Movie.findAll({ 
@@ -100,10 +102,43 @@ async function deleteMovies (req, res) {
     }
 }
 
+async function addCharacterToMovie (req, res) {
+    try {
+        const id = parseInt(req.params.id)
+        const idCharacter = parseInt(req.params.idCharacter)
+
+        const [ results ] =  await sequelize.query(`select * from Personaje_Movie where PersonajeId = ${idCharacter} and MovieId = ${id}`);
+        
+        const [ personaje_movie ] = results
+        
+        if (personaje_movie) {
+            return res.json({ error: "Ya esta asociada este personaje a la pelicula"})
+        }
+
+        const movie = await Movie.findByPk(id)
+        const personaje = await Personaje.findByPk(idCharacter)
+    
+        if (!personaje) {
+            return res.json({ error: "No se ha encontrado el personaje"})
+        }
+    
+        if (!movie) {
+            return res.json({ error: "No se ha encontrado la pelicula o serie"})
+        }
+    
+        personaje.addMovies(movie)
+    
+        res.json(personaje)
+    } catch (error) {
+        res.json(error)
+    }
+}
+
 export {
     getMoviesAll,
     postMovies,
     getMoviesById,
     updateMovies,
-    deleteMovies
+    deleteMovies,
+    addCharacterToMovie
 }

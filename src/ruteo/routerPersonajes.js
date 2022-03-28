@@ -5,7 +5,8 @@ import {
     postPersonajes,
     getPersonajesById,
     updatePersonajes,
-    deletePersonajes
+    deletePersonajes,
+    addMovieToCharacter
 } from '../controladores/controladorPersonajes.js'
 
 const router = Router();
@@ -20,6 +21,8 @@ router.post('/', postPersonajes)
 
 // Put
 router.put('/:id', updatePersonajes)
+
+router.put('/:id/movie/:idMovie', addMovieToCharacter)
 
 // Delete
 router.delete('/:id', deletePersonajes)
