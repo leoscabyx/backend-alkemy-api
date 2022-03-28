@@ -9,6 +9,7 @@ const Personaje = sequelize.define('Personaje', {
     },
     nombre: {
       type: DataTypes.STRING,
+      unique: true,
       validate: {
         len: {
           args: [3, 255],

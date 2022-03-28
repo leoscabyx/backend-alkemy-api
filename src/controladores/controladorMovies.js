@@ -5,8 +5,7 @@ import Personaje from '../modelos/Personaje.js'
 async function getMoviesAll (req, res) {
     try {
         const movies = await Movie.findAll({ 
-            attributes: ['imagen', 'titulo', 'fecha', 'calificacion'],
-            include: Personaje
+            attributes: ['imagen', 'titulo', 'fecha']
         })
         res.json(movies)
     } catch (error) {

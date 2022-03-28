@@ -5,8 +5,7 @@ import Movie from '../modelos/Movie.js'
 async function getPersonajesAll (req, res) {
     try {
         const personajes = await Personaje.findAll({ 
-            attributes: ['imagen', 'nombre'],
-            include: Movie
+            attributes: ['imagen', 'nombre']
         })
         res.json(personajes)
     } catch (error) {
@@ -17,11 +16,14 @@ async function getPersonajesAll (req, res) {
 async function getPersonajesById (req, res) {
     try {
         const id = parseInt(req.params.id)
-        const personajes = await Personaje.findByPk(id, { 
+        const personaje = await Personaje.findByPk(id, { 
             attributes: ['imagen', 'nombre', 'edad', 'peso', 'historia'],
             include: Movie
         })
-        res.json(personajes)
+        if (!personaje) {
+            return res.json({ error: "No se ha encontrado el personaje"})
+        }
+        res.json(personaje)
     } catch (error) {
         res.json(error)
     }
@@ -29,14 +31,8 @@ async function getPersonajesById (req, res) {
 
 async function postPersonajes (req, res) {
     try {
-        // const campos = { ...req.body }
-        const campos = { 
-            imagen: req.body.imagen,
-            nombre: req.body.nombre,
-            edad: req.body.edad,
-            peso: req.body.peso,
-            historia: req.body.historia,
-        }
+        
+        const campos = req.body
 
         if (!(campos.hasOwnProperty('imagen') 
             && campos.hasOwnProperty('nombre') 
@@ -46,23 +42,27 @@ async function postPersonajes (req, res) {
             return res.json({ msg: "Debes pasar la imagen, nombre y edad, peso e historia como minimo para crear un personaje"})
         }
 
-        if (req.body.hasOwnProperty('movies')) {
-            if(!Array.isArray(req.body.movies)) {
-                return res.json({ msg: "Debes pasar un array con objetos con la pelicula o serie relacionada al personaje"})
-            }
-        }
-
         const personaje = await Personaje.create(campos)
 
-        if(req.body.movies.length > 0){
+        /* if(!Array.isArray(campos.movies)) {
+            return res.json({ msg: "Debes pasar un array con objetos con las peliculas o series relacionadas al personaje"})
+        }
 
-            const moviesPromesas = req.body.movies.map( async (movie) => {
+        if(campos.movies.length === 0) {
+            return res.json({ msg: "El array de peliculas o series esta vacio"})
+        }
+
+        
+
+        if(campos.movies.length > 0){
+
+            const moviesPromesas = campos.map( async (movie) => {
                 return await Movie.create(movie)
             })
             const movies = await Promise.all(moviesPromesas);
 
             personaje.addMovies(movies)
-        }
+        } */
         res.json(personaje)
     } catch (error) {
         res.json(error)
@@ -72,14 +72,22 @@ async function postPersonajes (req, res) {
 async function updatePersonajes (req, res) {
     try {
         const id = parseInt(req.params.id)
-        const campos = { ...req.body }
+
+        const checkExist = await Personaje.findByPk(id)
+
+        if (!checkExist) {
+            return res.json({ error: "No se ha encontrado el personaje"})
+        }
+
+        const campos = req.body
         await Personaje.update(campos, {
             where: {
                 id: id
             }
         });
         const personaje = await Personaje.findByPk(id, { 
-            attributes: ['imagen', 'nombre', 'edad', 'peso', 'historia']
+            attributes: ['imagen', 'nombre', 'edad', 'peso', 'historia'],
+            include: Movie
         })
         res.json(personaje)
     } catch (error) {
@@ -90,9 +98,18 @@ async function updatePersonajes (req, res) {
 async function deletePersonajes (req, res) {
     try {
         const id = parseInt(req.params.id)
+
+        const checkExist = await Personaje.findByPk(id)
+
+        if (!checkExist) {
+            return res.json({ error: "No se ha encontrado el personaje"})
+        }
+
         const personaje = await Personaje.findByPk(id, { 
-            attributes: ['imagen', 'nombre', 'edad', 'peso', 'historia']
+            attributes: ['imagen', 'nombre', 'edad', 'peso', 'historia'],
+            include: Movie
         })
+        
         await Personaje.destroy({
             where: {
                 id: id
