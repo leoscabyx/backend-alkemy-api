@@ -27,8 +27,25 @@ async function getMoviesAll (req, res) {
             }
 
             if (filter === "genre") {
+                const [ results ] =  await sequelize.query(`select * from Movie_Genero where GeneroId = ${dato}`);
+                
+                if (results.length === 0) {
+                    return res.json({ error: "No se han encontrado las peliculas o series" })
+                }
+
+                const movies = []
+                for (const item of results) {
+                    
+                    const movie = await Movie.findByPk(item.MovieId, { 
+                        attributes: ['imagen', 'titulo', 'fecha', 'calificacion']
+                    })
+                    
+                    movies.push(movie)
+                }
+                return res.json(movies)
+                
                 // Falta
-                return res.json({ msj: "Aun no esta implementado alguna solucion para el filtro... "})
+                // return res.json({ msj: "Aun no esta implementado alguna solucion para el filtro... "})
             }
 
             if (filter === "order") {
