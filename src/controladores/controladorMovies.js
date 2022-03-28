@@ -6,6 +6,47 @@ import { sequelize } from '../modelos/index.js'
 
 async function getMoviesAll (req, res) {
     try {
+
+        const [ filter ] = Object.keys(req.query)
+        const dato = req.query[filter]
+
+        if (filter) {
+            if (!(filter === "name" || filter === "genre" || filter === "order")) {
+                return res.json({ error: "El filtro solo acepta name, genre o order" })
+            }
+
+            if (filter === "name") {
+                const results = await Movie.findOne({ where: { titulo: dato } });
+                
+                if (!results) {
+                    return res.json({ error: "No se han encontrado peliculas o series" })
+                }
+
+                const { dataValues: movie } = results
+                return res.json(movie)
+            }
+
+            if (filter === "genre") {
+                // Falta
+                return res.json({ msj: "Aun no esta implementado alguna solucion para el filtro... "})
+            }
+
+            if (filter === "order") {
+                const results =  await Movie.findAll({
+                    order: [
+                        ['titulo', dato],
+                    ]
+                })
+                
+                if (results.length === 0) {
+                    return res.json({ error: "No se han encontrado peliculas o series" })
+                }
+
+                const movies = results
+                return res.json(movies)
+            } 
+        }
+
         const movies = await Movie.findAll({ 
             attributes: ['imagen', 'titulo', 'fecha']
         })

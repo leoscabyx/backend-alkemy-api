@@ -39,7 +39,6 @@ async function getPersonajesAll (req, res) {
 
             if (filter === "idmovie") {
                 const [ results ] =  await sequelize.query(`select * from Personaje_Movie where MovieId = ${dato}`);
-                console.log(results)
                 
                 if (results.length === 0) {
                     return res.json({ error: "No se han encontrado personajes" })
