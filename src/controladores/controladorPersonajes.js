@@ -6,6 +6,58 @@ import { sequelize } from '../modelos/index.js'
 
 async function getPersonajesAll (req, res) {
     try {
+
+        const [ filter ] = Object.keys(req.query)
+        const dato = req.query[filter]
+
+        if (filter) {
+            if (!(filter === "name" || filter === "age" || filter === "idmovie")) {
+                return res.json({ error: "El filtro solo acepta name, age o idmovie" })
+            }
+
+            if (filter === "name") {
+                const results = await Personaje.findOne({ where: { nombre: dato } });
+                
+                if (!results) {
+                    return res.json({ error: "No se han encontrado personaje" })
+                }
+
+                const { dataValues: personaje } = results
+                return res.json(personaje)
+            }
+
+            if (filter === "age") {
+                const results = await Personaje.findAll({ where: { edad: dato } });
+                
+                if (results.length === 0) {
+                    return res.json({ error: "No se han encontrado personajes" })
+                }
+
+                const personajes = results
+                return res.json(personajes)
+            }
+
+            if (filter === "idmovie") {
+                const [ results ] =  await sequelize.query(`select * from Personaje_Movie where MovieId = ${dato}`);
+                console.log(results)
+                
+                if (results.length === 0) {
+                    return res.json({ error: "No se han encontrado personajes" })
+                }
+
+                const personajes = []
+                for (const item of results) {
+                    
+                    const personaje = await Personaje.findByPk(item.PersonajeId, { 
+                        attributes: ['imagen', 'nombre', 'edad', 'peso', 'historia']
+                    })
+                    
+                    personajes.push(personaje)
+                }
+                return res.json(personajes)
+            } 
+        }
+
         const personajes = await Personaje.findAll({ 
             attributes: ['imagen', 'nombre']
         })
