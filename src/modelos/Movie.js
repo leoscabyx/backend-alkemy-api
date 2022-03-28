@@ -1,5 +1,7 @@
 import { sequelize, DataTypes } from './index.js'
 
+import Genero from './Genero.js'
+
 const Movie = sequelize.define('Movie', {
 
     imagen: {
@@ -21,5 +23,9 @@ const Movie = sequelize.define('Movie', {
     }
   }
 );
+
+// Asociacion N a N
+Movie.belongsToMany(Genero, { through: "Movie_Genero" })
+Genero.belongsToMany(Movie, { through: "Movie_Genero" })
 
 export default Movie
