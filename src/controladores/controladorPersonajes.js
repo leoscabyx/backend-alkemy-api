@@ -2,7 +2,7 @@ import Personaje from '../modelos/Personaje.js'
 
 import Movie from '../modelos/Movie.js'
 
-import { sequelize } from '../modelos/index.js'
+import { sequelize } from '../db/index.js'
 
 async function getPersonajesAll (req, res) {
     try {

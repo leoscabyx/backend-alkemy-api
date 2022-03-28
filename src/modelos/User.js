@@ -1,4 +1,4 @@
-import { sequelize, DataTypes } from './index.js'
+import { sequelize, DataTypes } from '../db/index.js'
 
 const User = sequelize.define('User', {
     email: {

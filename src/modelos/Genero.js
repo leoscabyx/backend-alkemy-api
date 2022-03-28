@@ -1,4 +1,4 @@
-import { sequelize, DataTypes } from './index.js'
+import { sequelize, DataTypes } from '../db/index.js'
 
 const Genero = sequelize.define('Genero', {
 

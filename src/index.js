@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { sequelize } from './modelos/index.js'
+import { dbConnect } from './db/index.js'
 import routerPersonajes from './ruteo/routerPersonajes.js'
 import routerMovies from './ruteo/routerMovies.js'
 import routerGeneros from './ruteo/routerGeneros.js'
@@ -33,12 +33,5 @@ app.all('*', (req, res) => {
 
 app.listen(PORT, async () => {
   console.log(`Servidor levantado en el puerto: ${PORT}`)
-  try {
-    // await sequelize.authenticate();
-    // Forzar a true: para drop tablas
-    await sequelize.sync({ force: false }); 
-    console.log('Conexion establecida con la DB.');
-  } catch (error) {
-      console.error('No se puede conectar a la DB:', error);
-  }
+  dbConnect()
 })

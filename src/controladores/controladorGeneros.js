@@ -2,12 +2,13 @@ import Genero from '../modelos/Genero.js'
 
 import Movie from '../modelos/Movie.js'
 
-import { sequelize } from '../modelos/index.js'
+import { sequelize } from '../db/index.js'
 
 async function getGenerosAll (req, res) {
     try {
         const generos = await Genero.findAll({ 
-            attributes: ['imagen', 'nombre']
+            attributes: ['imagen', 'nombre'],
+            include: Movie
         })
         res.json(generos)
     } catch (error) {
